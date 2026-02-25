@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      # Mongo / Redis config
+      MONGO_URI: "mongodb://mongo:27017"
+      MONGO_DB_NAME: "movie_booking"
+      REDIS_URL: "redis://redis:6379/0"
+
+      # App-specific
+      START_FRONTEND: "0"         # disable auto-start of Vite from backend
+      HOLD_TTL_SECONDS: "600"
+      JWT_SECRET: "change_me_jwt_secret"   # replace in real env
+
+    ports:
+      - "5000:5000"               # backend exposed on host:5000
+    networks:
+      - app-net
+
+  frontend:
+    build:
+      context: ./my-frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - backend
+    environment:
+      # Typical Vite env vars; adjust as needed
+      VITE_API_BASE_URL: "http://localhost:5000"
+    ports:
+      - "5173:5173"               # Vite dev / built app port
+    networks:
+      - app-net
+
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"             # optional, for connecting from host tools
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-net
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"               # optional, for connecting from host tools
+    networks:
+      - app-net
+
+networks:
+  app-net:
+
+volumes:
+  mongo_data:

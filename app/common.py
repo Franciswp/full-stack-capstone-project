@@ -8,7 +8,7 @@ from pymongo import MongoClient
 import redis
 
 # Reuse project's helpers
-from models_mongo import ensure_indexes, doc_to_json  # ensure_indexes and doc_to_json expected in models_mongo
+from .models_mongo import ensure_indexes, doc_to_json  # ensure_indexes and doc_to_json expected in models_mongo
 
 load_dotenv()
 

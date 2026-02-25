@@ -16,10 +16,9 @@ services:
 
     # Optional overrides or additional env vars
     environment:
-      START_FRONTEND: "0"         # disable auto-start of Vite from backend
+      START_FRONTEND: "0"
       HOLD_TTL_SECONDS: "600"
-      # You can still override JWT_SECRET here if needed
-      # JWT_SECRET: "change_me_jwt_secret"
+      # Do NOT set MONGO_URI here unless you also use "mongodb://mongo:27017"
 
     ports:
       - "5000:5000"               # backend exposed on host:5000

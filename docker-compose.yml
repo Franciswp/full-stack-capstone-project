@@ -9,16 +9,17 @@ services:
     depends_on:
       - mongo
       - redis
-    environment:
-      # Mongo / Redis config
-      MONGO_URI: "mongodb://mongo:27017"
-      MONGO_DB_NAME: "movie_booking"
-      REDIS_URL: "redis://redis:6379/0"
 
-      # App-specific
+    # Load variables from ./app/.env
+    env_file:
+      - ./app/.env
+
+    # Optional overrides or additional env vars
+    environment:
       START_FRONTEND: "0"         # disable auto-start of Vite from backend
       HOLD_TTL_SECONDS: "600"
-      JWT_SECRET: "change_me_jwt_secret"   # replace in real env
+      # You can still override JWT_SECRET here if needed
+      # JWT_SECRET: "change_me_jwt_secret"
 
     ports:
       - "5000:5000"               # backend exposed on host:5000
@@ -27,14 +28,14 @@ services:
 
   frontend:
     build:
-      context: ./my-frontend
-      dockerfile: Dockerfile
+      context: .
+    # Dockerfile path is relative to build context (project root)
+      dockerfile: my-frontend/Dockerfile
     container_name: frontend
     depends_on:
       - backend
     environment:
-      # Typical Vite env vars; adjust as needed
-      VITE_API_BASE_URL: "http://localhost:5000"
+      VITE_API_BASE_URL: "http://backend:5000"   # talks to backend service name
     ports:
       - "5173:5173"               # Vite dev / built app port
     networks:

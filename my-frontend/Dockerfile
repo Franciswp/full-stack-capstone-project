@@ -2,18 +2,17 @@ FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
-# Copy manifest files first for better caching
-COPY package.json ./
-# COPY package-lock.json ./   # uncomment this line if you add a lockfile later
-
-# If you have package-lock.json, prefer `npm ci`
+# Build context is project root; package.json is under my-frontend/
+COPY my-frontend/package.json ./
+# If you later add a lockfile, also copy it and switch to npm ci:
+# COPY my-frontend/package-lock.json ./
 # RUN npm ci
 
-# Fallback that works without package-lock.json:
+# Works without package-lock.json
 RUN npm install
 
 # Copy the rest of the frontend source
-COPY . .
+COPY my-frontend ./ 
 
 EXPOSE 5173
 

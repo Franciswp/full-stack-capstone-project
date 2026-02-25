@@ -13,17 +13,18 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 
-from common import init_db_and_redis, ensure_indexes_db
+from .common import init_db_and_redis, ensure_indexes_db
 
 # import blueprints
-from blueprints.users import users_bp
-from blueprints.movies import movies_bp
-from blueprints.bookings import bookings_bp
-from blueprints.payments import payments_bp
-from blueprints.reviews import reviews_bp
+from .blueprints.users import users_bp
+from .blueprints.movies import movies_bp
+from .blueprints.bookings import bookings_bp
+from .blueprints.payments import payments_bp
+from .blueprints.reviews import reviews_bp
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "config.example"))
 
+# ... existing code ...
 # Add this near the top-level (after imports)
 START_FRONTEND = os.getenv("START_FRONTEND", "1") == "1"
 

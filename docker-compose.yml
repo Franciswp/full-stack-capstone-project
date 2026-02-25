@@ -10,15 +10,19 @@ services:
       - mongo
       - redis
 
-    # Load variables from ./app/.env
+    # still load app/.env if you want
     env_file:
       - ./app/.env
 
-    # Optional overrides or additional env vars
     environment:
+      # Force container to talk to compose services, NOT localhost
+      MONGO_URI: "mongodb://mongo:27017"
+      MONGO_DB_NAME: "movie_booking"
+      REDIS_URL: "redis://redis:6379/0"
+
       START_FRONTEND: "0"
       HOLD_TTL_SECONDS: "600"
-      # Do NOT set MONGO_URI here unless you also use "mongodb://mongo:27017"
+      JWT_SECRET: "change_me_jwt_secret"
 
     ports:
       - "5000:5000"               # backend exposed on host:5000

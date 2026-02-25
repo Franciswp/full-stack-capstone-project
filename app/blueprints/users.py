@@ -4,8 +4,8 @@ from bson import ObjectId
 from datetime import datetime
 
 from ..models_mongo import make_user, doc_to_json
-from schemas import UserCreate
-from auth import make_access_token, make_refresh_token, decode_token, hash_password, verify_password
+from ..schemas import UserCreate
+from ..auth import make_access_token, make_refresh_token, decode_token, hash_password, verify_password
 
 users_bp = Blueprint('users', __name__)
 

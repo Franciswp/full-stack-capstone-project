@@ -3,22 +3,26 @@ from flask import Blueprint, request, current_app, jsonify
 from bson import ObjectId
 from datetime import datetime
 
-from models_mongo import make_movie, make_screening, doc_to_json
-from auth import requires_role
-from auth import auth_required
+from ..models_mongo import make_movie, make_screening, doc_to_json
+from ..auth import requires_role, auth_required
 
 movies_bp = Blueprint('movies', __name__)
 
 @movies_bp.route('', methods=['POST'])
 @requires_role('admin')   # only admins (or role==admin) can create movies
 def create_movie():
-    payload = request.get_json()
+    payload = request.get_json() or {}
     title = payload.get('title')
     if not title:
         return jsonify({'error': 'title required'}), 400
-    doc = make_movie(title, description=payload.get('description'), genre=payload.get('genre'),
-                     runtime=payload.get('runtime'), rating=payload.get('rating'),
-                     poster_url=payload.get('poster_url'))
+    doc = make_movie(
+        title,
+        description=payload.get('description'),
+        genre=payload.get('genre'),
+        runtime=payload.get('runtime'),
+        rating=payload.get('rating'),
+        poster_url=payload.get('poster_url'),
+    )
     current_app.mdb.movies.insert_one(doc)
     return jsonify(doc_to_json(doc)), 201
 

@@ -1,13 +1,14 @@
 # app/blueprints/payments.py
 from flask import Blueprint, request, current_app, jsonify
-from models_mongo import make_payment, doc_to_json
 from bson import ObjectId
+
+from ..models_mongo import make_payment, doc_to_json
 
 payments_bp = Blueprint('payments', __name__)
 
 @payments_bp.route('', methods=['POST'])
 def create_payment():
-    payload = request.get_json()
+    payload = request.get_json() or {}
     booking_id = payload.get('booking_id')
     provider = payload.get('provider')
     amount = payload.get('amount', 0.0)
@@ -17,7 +18,13 @@ def create_payment():
         booking_oid = ObjectId(booking_id)
     except Exception:
         return jsonify({'error': 'invalid booking_id'}), 400
-    pay_doc = make_payment(booking_oid, provider, amount, status='INITIATED', provider_reference=payload.get('provider_reference'))
+    pay_doc = make_payment(
+        booking_oid,
+        provider,
+        amount,
+        status='INITIATED',
+        provider_reference=payload.get('provider_reference'),
+    )
     current_app.mdb.payments.insert_one(pay_doc)
     # In reality: call provider SDK (Stripe/PayPal), await webhook, then update payment.status and booking.status
     return jsonify(doc_to_json(pay_doc)), 201

@@ -4,11 +4,9 @@ import uuid
 from flask import Blueprint, request, jsonify, g, current_app
 from bson import ObjectId
 from datetime import datetime
-# Ensure this import is near the top of the file, before any @auth_required usage
-try:
-    from auth import auth_required
-except ImportError:
-    from app.auth import auth_required
+
+from ..auth import auth_required
+from ..models_mongo import doc_to_json
 
 bookings_bp = Blueprint('bookings', __name__)
 

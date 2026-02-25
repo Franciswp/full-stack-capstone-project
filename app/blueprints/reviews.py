@@ -1,13 +1,14 @@
 # app/blueprints/reviews.py
 from flask import Blueprint, request, current_app, jsonify
-from models_mongo import make_review, doc_to_json
 from bson import ObjectId
+
+from ..models_mongo import make_review, doc_to_json
 
 reviews_bp = Blueprint('reviews', __name__)
 
 @reviews_bp.route('', methods=['POST'])
 def create_review():
-    data = request.get_json()
+    data = request.get_json() or {}
     user_id = data.get('user_id')
     movie_id = data.get('movie_id')
     rating = data.get('rating')

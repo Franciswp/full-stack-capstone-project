@@ -10,19 +10,16 @@ services:
       - mongo
       - redis
 
-    # still load app/.env if you want
+    # Load variables from ./app/.env
     env_file:
       - ./app/.env
 
+    # Optional overrides or additional env vars
     environment:
-      # Force container to talk to compose services, NOT localhost
-      MONGO_URI: "mongodb://mongo:27017"
-      MONGO_DB_NAME: "movie_booking"
-      REDIS_URL: "redis://redis:6379/0"
-
-      START_FRONTEND: "0"
+      START_FRONTEND: "0"         # disable auto-start of Vite from backend
       HOLD_TTL_SECONDS: "600"
-      JWT_SECRET: "change_me_jwt_secret"
+      # You can still override JWT_SECRET here if needed
+      # JWT_SECRET: "change_me_jwt_secret"
 
     ports:
       - "5000:5000"               # backend exposed on host:5000

@@ -3,7 +3,7 @@ from flask import Blueprint, request, current_app, jsonify, g
 from bson import ObjectId
 from datetime import datetime
 
-from models_mongo import make_user, doc_to_json
+from ..models_mongo import make_user, doc_to_json
 from schemas import UserCreate
 from auth import make_access_token, make_refresh_token, decode_token, hash_password, verify_password
 

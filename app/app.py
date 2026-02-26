@@ -34,7 +34,7 @@ START_FRONTEND = os.getenv("START_FRONTEND", "1") == "1"
 # ... existing code ...
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5175"]}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": ["https://capstone-microservice-backend.onrender.com","http://localhost:5173", "http://127.0.0.1:5175"]}}, supports_credentials=True)
 
     # load config into app.config for convenience
     app.config["HOLD_TTL_SECONDS"] = int(os.environ.get("HOLD_TTL_SECONDS", 600))
@@ -59,7 +59,7 @@ def create_app() -> Flask:
     def get_screening(screening_id: str):
         if request.method == "OPTIONS":
             resp = make_response("", 204)
-            resp.headers["Access-Control-Allow-Origin"] = "http://localhost:5175"
+            resp.headers["Access-Control-Allow-Origin"] = ["https://capstone-microservice-backend.onrender.com","http://localhost:5175"]
             resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
             resp.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type"
             resp.headers["Access-Control-Allow-Credentials"] = "true"
@@ -67,7 +67,7 @@ def create_app() -> Flask:
 
         # Normal GET logic
         resp = make_response("...", 200)
-        resp.headers["Access-Control-Allow-Origin"] = "http://localhost:5175"
+        resp.headers["Access-Control-Allow-Origin"] = ["https://capstone-microservice-backend.onrender.com","http://localhost:5175"]
         resp.headers["Access-Control-Allow-Credentials"] = "true"
         return resp
 

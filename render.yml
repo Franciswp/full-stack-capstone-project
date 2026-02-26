@@ -55,7 +55,7 @@ services:
       # Point to the public URL of the backend service.
       # After first deploy, update this to the actual URL Render shows for capstone-backend.
       - key: VITE_API_BASE_URL
-        value: "https://capstone-backend.onrender.com"
+        value: "https://capstone-microservice-backend.onrender.com"
 
   # =========================
   # Redis (Render-managed)

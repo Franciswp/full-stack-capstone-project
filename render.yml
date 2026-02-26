@@ -1,0 +1,66 @@
+services:
+  # =========================
+  # Backend (Flask + Mongo + Redis) - Docker
+  # =========================
+  - type: web
+    name: capstone-backend
+    runtime: docker
+    repo: https://github.com/Franciswp/capstone-microservice-backend.git
+    branch: main
+    dockerfilePath: ./Dockerfile
+    plan: starter       # or "free" / "standard" depending on what you want
+    healthCheckPath: /health
+    autoDeploy: true
+
+    envVars:
+      # ---- App config ----
+      - key: FLASK_ENV
+        value: production
+      - key: HOLD_TTL_SECONDS
+        value: "600"
+      - key: JWT_SECRET
+        value: "<set_a_strong_secret_here>"
+
+      # ---- Databases ----
+      # Use your real MongoDB Atlas connection string here
+      - key: MONGO_URI
+        value: "mongodb+srv://sensor_user:sensor_user@cluster0.jqjrlyz.mongodb.net/movie_booking?retryWrites=true&w=majority&appName=Cluster0"
+
+      # Redis URL is injected from the Redis service below
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: capstone-redis
+          property: connectionString
+
+      # ---- Frontend auto-start ----
+      # In production, frontend runs as a separate Render service,
+      # so we disable auto-start of Vite in the backend.
+      - key: START_FRONTEND
+        value: "0"
+
+  # =========================
+  # Frontend (Vite / React) - Docker
+  # =========================
+  - type: web
+    name: capstone-frontend
+    runtime: docker
+    repo: https://github.com/Franciswp/capstone-microservice-backend.git
+    branch: main
+    dockerfilePath: ./my-frontend/Dockerfile
+    plan: starter
+    autoDeploy: true
+
+    envVars:
+      # Point to the public URL of the backend service.
+      # After first deploy, update this to the actual URL Render shows for capstone-backend.
+      - key: VITE_API_BASE_URL
+        value: "https://capstone-backend.onrender.com"
+
+  # =========================
+  # Redis (Render-managed)
+  # =========================
+  - type: redis
+    name: capstone-redis
+    plan: starter          # or "free" if available in your account
+    maxmemoryPolicy: allkeys-lru

@@ -26,12 +26,12 @@ from .blueprints.reviews import reviews_bp
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "config.example"))
 
 # ... existing code ...
-mongo_uri = os.getenv("MONGO_URI", "mongodb://mongo:27017")
+mongo_uri = os.getenv("MONGO_URI", "mongodb://mongo:27017/movie_booking")
 client = MongoClient(mongo_uri)
 # Add this near the top-level (after imports)
 START_FRONTEND = os.getenv("START_FRONTEND", "1") == "1"
 
-
+# ... existing code ...
 def create_app() -> Flask:
     app = Flask(__name__)
     CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5175"]}}, supports_credentials=True)

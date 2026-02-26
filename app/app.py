@@ -8,6 +8,7 @@ import io
 from pathlib import Path
 from typing import Optional
 import shutil
+from pymongo import MongoClient
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, make_response
@@ -25,6 +26,8 @@ from .blueprints.reviews import reviews_bp
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "config.example"))
 
 # ... existing code ...
+mongo_uri = os.getenv("MONGO_URI", "mongodb+srv://sensor_user:sensor_user@cluster0.jqjrlyz.mongodb.net/movie_booking?retryWrites=true&w=majority&appName=Cluster0")
+client = MongoClient(mongo_uri)
 # Add this near the top-level (after imports)
 START_FRONTEND = os.getenv("START_FRONTEND", "1") == "1"
 

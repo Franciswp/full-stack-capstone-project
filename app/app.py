@@ -10,18 +10,21 @@ from typing import Optional
 import shutil
 from pymongo import MongoClient
 
+# Add parent directory to path for imports to work
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 
-from .common import init_db_and_redis, ensure_indexes_db
+from app.common import init_db_and_redis, ensure_indexes_db
 
 # import blueprints
-from .blueprints.users import users_bp
-from .blueprints.movies import movies_bp
-from .blueprints.bookings import bookings_bp
-from .blueprints.payments import payments_bp
-from .blueprints.reviews import reviews_bp
+from app.blueprints.users import users_bp
+from app.blueprints.movies import movies_bp
+from app.blueprints.bookings import bookings_bp
+from app.blueprints.payments import payments_bp
+from app.blueprints.reviews import reviews_bp
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "config.example"))
 
@@ -34,7 +37,20 @@ START_FRONTEND = os.getenv("START_FRONTEND", "1") == "1"
 # ... existing code ...
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5175"]}}, supports_credentials=True)
+    # Allow all localhost origins for development
+    cors_origins = [
+        "http://localhost:5173",
+        "http://localhost:5174", 
+        "http://localhost:5175",
+        "http://localhost:5176",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174",
+        "http://127.0.0.1:5175",
+        "http://127.0.0.1:5176",
+        "http://127.0.0.1:3000",
+    ]
+    CORS(app, resources={r"/*": {"origins": cors_origins}}, supports_credentials=True)
 
     # load config into app.config for convenience
     app.config["HOLD_TTL_SECONDS"] = int(os.environ.get("HOLD_TTL_SECONDS", 600))
